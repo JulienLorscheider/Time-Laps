@@ -10,16 +10,16 @@ import AVFoundation
 import AudioToolbox
 
 struct ContentView: View {
-    @State private var selectedTime = TimeInterval(600)
-    @State private var timeRemaining = TimeInterval(600)
-    @State private var timerActive = false
-    @State private var timer: Timer?
-    @State private var audioPlayer: AVAudioPlayer?
-    @State private var currentQuote = ""
-    @State private var journalEntries: [JournalEntry] = []
-    @State private var showJournal = false
-    @State private var showingNamingView = false
-    @State private var timerStartTime: Date?
+    @State internal var selectedTime = TimeInterval(600)
+    @State internal var timeRemaining = TimeInterval(600)
+    @State internal var timerActive = false
+    @State internal var timer: Timer?
+    @State internal var audioPlayer: AVAudioPlayer?
+    @State internal var currentQuote = ""
+    @State internal var journalEntries: [JournalEntry] = []
+    @State internal var showJournal = false
+    @State internal var showingNamingView = false
+    @State internal var timerStartTime: Date?
 
     let backgroundColor: Color = Color(#colorLiteral(red: 0.1254901961, green: 0.2980392157, blue: 0.4901960784, alpha: 1))
     let foregroundColor: Color = Color(#colorLiteral(red: 0.9333333333, green: 0.9098039216, blue: 0.6666666667, alpha: 1))
