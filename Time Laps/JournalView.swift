@@ -24,7 +24,9 @@ struct JournalView: View {
     var body: some View {
         Group {
             if entries.isEmpty {
-                emptyJournalView
+                withAnimation {
+                    emptyJournalView
+                }
             } else {
                 List {
                     Text("Historique des Sessions")
@@ -64,11 +66,15 @@ struct JournalView: View {
             Divider()
         }
         .padding()
-        .transition(.slide)
+        .shadow(radius: 3)
+        .scaleEffect(0.95)
+        .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .trailing)))
         .animation(.default, value: pinnedEntries)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
-                deleteEntry(entry)
+                withAnimation {
+                    deleteEntry(entry)
+                }
             } label: {
                 Label("Supprimer", systemImage: "trash")
             }
@@ -97,6 +103,7 @@ struct JournalView: View {
                 .padding()
         }
         .padding()
+        .transition(.opacity)
     }
 
     private var journalListView: some View {
@@ -131,7 +138,10 @@ struct JournalView: View {
 
     private func deleteEntry(_ entry: JournalEntry) {
         if let index = entries.firstIndex(where: { $0.date == entry.date }) {
-            entries.remove(at: index)
+            let entryToRemove = entries[index]
+            withAnimation {
+                entries.removeAll { $0.date == entryToRemove.date }
+            }
         }
     }
 
