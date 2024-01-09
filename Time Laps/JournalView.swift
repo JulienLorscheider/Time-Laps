@@ -41,7 +41,7 @@ struct JournalView: View {
                             journalEntryView(entry)
                         }
                     }
-
+                    
                     if !unpinnedEntriesSorted.isEmpty {
                         // Section pour les éléments non épinglés
                         Text("Non Épinglés")
@@ -52,6 +52,11 @@ struct JournalView: View {
                         }
                     }
                 }
+            }
+        }
+        .onAppear {
+            if let savedPinnedEntries = UserDefaults.standard.object(forKey: "PinnedEntries") as? [Date] {
+                self.pinnedEntries = savedPinnedEntries
             }
         }
     }
@@ -151,11 +156,13 @@ struct JournalView: View {
                 pinnedEntries.remove(at: index)
                 self.entries = self.entries.sorted { $0.date > $1.date }
             }
+            UserDefaults.standard.set(pinnedEntries, forKey: "PinnedEntries")
         } else {
             withAnimation {
                 pinnedEntries.append(entry.date)
                 self.entries = self.entries.sorted { $0.date > $1.date }
             }
+            UserDefaults.standard.set(pinnedEntries, forKey: "PinnedEntries")
         }
     }
 
@@ -167,7 +174,7 @@ struct JournalView: View {
     }
 }
 
-struct JournalEntry: Equatable {
+struct JournalEntry: Codable, Equatable {
     let date: Date
     let duration: TimeInterval
     var name: String

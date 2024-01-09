@@ -50,12 +50,14 @@ struct ContentView: View {
             }
         }
         .onChange(of: journalEntries) { _ in
+            saveTimers()
             print("Journal entries updated")
         }
         .sheet(isPresented: $showingNamingView) {
             NamingView(isPresented: $showingNamingView, journalEntries: $journalEntries, duration: selectedTime - timeRemaining, startTime: timerStartTime ?? Date())
         }
         .onAppear {
+            loadTimers()
             requestNotificationPermission()
         }
     }
@@ -64,9 +66,9 @@ struct ContentView: View {
     var homeView: some View {
         VStack {
             Picker("Durée", selection: $selectedTime) {
-                Text("5 minutes").tag(TimeInterval(300))
-                Text("10 minutes").tag(TimeInterval(600))
-                Text("15 minutes").tag(TimeInterval(900))
+                Text("5 minutes").tag(TimeInterval(300)).foregroundColor(backgroundColor)
+                Text("10 minutes").tag(TimeInterval(600)).foregroundColor(backgroundColor)
+                Text("15 minutes").tag(TimeInterval(900)).foregroundColor(backgroundColor)
             }
             .pickerStyle(WheelPickerStyle())
             .background(RoundedRectangle(cornerRadius: 25).fill(foregroundColor).shadow(radius: 5))
@@ -167,6 +169,21 @@ struct ContentView: View {
     func selectRandomQuote() {
         currentQuote = motivationalQuotes.randomElement() ?? "Restez motivé !"
     }
+    
+    func saveTimers() {
+        if let encoded = try? JSONEncoder().encode(journalEntries) {
+            UserDefaults.standard.set(encoded, forKey: "SavedTimers")
+        }
+    }
+    
+    func loadTimers() {
+        if let savedTimers = UserDefaults.standard.object(forKey: "SavedTimers") as? Data {
+            if let decodedTimers = try? JSONDecoder().decode([JournalEntry].self, from: savedTimers) {
+                self.journalEntries = decodedTimers
+            }
+        }
+    }
+
 }
 
 // Vue du Minuteur
